@@ -17,5 +17,5 @@ spring:
 logging:
   level:
     root: info
-    com.dmk.scrimdor: debug
+    com.dmk.melodify: debug
     org.springframework.core.LocalVariableTableParameterNameDiscoverer: error
