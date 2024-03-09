@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security" xmlns:layout="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <meta name="description" content="">
+    <meta name="author" content="Dongmin Kim">
+    <title layout:title-pattern="$LAYOUT_TITLE | $CONTENT_TITLE">Melodify</title>
+
+    <!-- bootstarp 5   -->
+    <script th:src="@{/bootstrap/bootstrap.min.js}"></script>
+    <link rel="stylesheet" th:href="@{/bootstrap/bootstrap.min.css}">
+</head>
+<body class="d-flex flex-column min-vh-100">
+    <header class="p-3 bg-dark text-white">
+        <div class="container">
+            <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
+                <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center align-items-center mb-md-0">
+                    <li>
+                        <a th:href="@{/}" class="nav-link px-2 text-white text-decoration-none">멜로디파이</a>
+                    </li>
+                </ul>
+
+                <div class="text-end">
+                    <a th:href="@{/members/login}" sec:authorize="isAnonymous()" class="btn btn-sm btn-light me-2">로그인</a>
+                    <a th:href="@{/members/join}" sec:authorize="isAnonymous()" class="btn btn-sm btn-warning">회원가입</a>
+                    <span sec:authorize="isAuthenticated()" th:text="${#authentication.principal.username}"></span>
+                    <a th:href="@{/members/logout}" sec:authorize="isAuthenticated()" class="btn btn-sm btn-warning">로그아웃</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main layout:fragment="main" class="container flex-grow-1 mt-3"></main>
+
+    <footer class="p-3 bg-dark text-white">
+        <div class="container">
+            <div class="d-flex flex-column align-items-center justify-content-center">
+                <p class="mb-1 text-white">&copy; 2024 Dongmin Kim, Inc</p>
+                <p>
+                    <a class="text-warning" target="_blank" href="https://github.com/don9m1n/melodify">멜로디파이</a>
+                </p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
