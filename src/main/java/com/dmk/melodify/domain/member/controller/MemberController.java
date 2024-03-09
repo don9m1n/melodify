@@ -16,6 +16,11 @@ public class MemberController {
 
     private final MemberService memberService;
 
+    @GetMapping("/login")
+    public String login() {
+        return "member/login";
+    }
+
     @GetMapping("/join")
     public String joinForm(@ModelAttribute JoinForm joinForm) {
         return "member/join";
