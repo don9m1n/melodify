@@ -60,6 +60,13 @@ public class MemberService {
         memberRepository.save(member);
     }
 
+    public void changePassword(String username, String newPassword) {
+        Member member = getMemberByUsername(username);
+        member.changePassword(passwordEncoder.encode(newPassword));
+
+        memberRepository.save(member);
+    }
+
     public void removeProfileImg(Member member) {
         log.debug("profileImg: {}", member.getProfileImg());
         member.removeProfileImgOnStorage();
@@ -70,6 +77,10 @@ public class MemberService {
 
     public Member getMemberById(Long memberId) {
         return memberRepository.findById(memberId).orElseThrow(() -> new UsernameNotFoundException("존재하지 않는 회원입니다."));
+    }
+
+    public Member getMemberByUsername(String username) {
+        return memberRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("존재하지 않는 회원입니다."));
     }
 
 }
