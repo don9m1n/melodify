@@ -1,7 +1,7 @@
 package com.dmk.melodify.domain.member.entity;
 
-import com.dmk.melodify.common.auditing.BaseEntity;
 import com.dmk.melodify.common.AppConfig;
+import com.dmk.melodify.common.auditing.BaseEntity;
 import com.dmk.melodify.domain.member.dto.JoinForm;
 import com.dmk.melodify.domain.member.dto.ModifyDto;
 import jakarta.persistence.Entity;
@@ -16,10 +16,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.extern.slf4j.Slf4j;
 
 @Entity
-@Slf4j
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Member extends BaseEntity {
@@ -80,7 +78,6 @@ public class Member extends BaseEntity {
         }
 
         String profileImgPath = getProfileImgPath();
-        log.debug("profileImgPath: {}", profileImgPath);
         new File(profileImgPath).delete();
     }
 

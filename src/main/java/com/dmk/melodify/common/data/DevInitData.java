@@ -2,7 +2,6 @@ package com.dmk.melodify.common.data;
 
 import com.dmk.melodify.domain.member.entity.Member;
 import com.dmk.melodify.domain.member.repository.MemberRepository;
-import com.dmk.melodify.domain.member.service.MemberService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

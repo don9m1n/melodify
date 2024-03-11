@@ -2,7 +2,6 @@ package com.dmk.melodify.common.security;
 
 
 import com.dmk.melodify.domain.member.entity.Member;
-import java.util.Collection;
 import java.util.List;
 import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
