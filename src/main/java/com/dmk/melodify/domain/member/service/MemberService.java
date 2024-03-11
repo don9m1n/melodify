@@ -61,6 +61,19 @@ public class MemberService {
 
         member.modify(modifyDto, newProfileImgPath);
         memberRepository.save(member);
+
+        forceUpdateAuthentication(member);
+    }
+
+    // 시큐리티 세션 갱신
+    private void forceUpdateAuthentication(Member member) {
+        List<GrantedAuthority> authorities = new ArrayList<>();
+        authorities.add(new SimpleGrantedAuthority("ROLE_MEMBER"));
+
+        MemberContext context = new MemberContext(member, authorities);
+
+        Authentication authentication = new UsernamePasswordAuthenticationToken(context, member.getPassword(), context.getAuthorities());
+        SecurityContextHolder.getContext().setAuthentication(authentication);
     }
 
     // 프로필 이미지 업로드
