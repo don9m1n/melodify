@@ -68,6 +68,7 @@ public class Member extends BaseEntity {
                 .password(password)
                 .email(email)
                 .nickname(nickname)
+                .role(MemberRole.MEMBER)
                 .profileImg(profileImg)
                 .build();
     }
@@ -84,5 +85,9 @@ public class Member extends BaseEntity {
 
     private String getProfileImgPath() {
         return AppConfig.FILE_DIR_PATH + "/" + profileImg;
+    }
+
+    public void changePassword(String newPassword) {
+        this.password = newPassword;
     }
 }

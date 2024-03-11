@@ -1,8 +1,10 @@
 package com.dmk.melodify.domain.member.controller;
 
 import com.dmk.melodify.domain.member.dto.JoinForm;
+import com.dmk.melodify.domain.member.entity.Member;
 import com.dmk.melodify.domain.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -15,6 +17,21 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class MemberController {
 
     private final MemberService memberService;
+
+    @GetMapping("/modify-password")
+    public String modifyPasswordForm() {
+        return "member/modify-password";
+    }
+
+    @PostMapping("/modify-password")
+    public String modifyPassword(Authentication authentication, String newPassword, String newPasswordConfirm) {
+        if (!newPassword.equals(newPasswordConfirm)) {
+            throw new RuntimeException("비밀번호가 일치하지 않습니다!");
+        }
+
+        memberService.changePassword(authentication.getName(), newPassword);
+        return "redirect:/members/logout";
+    }
 
     @GetMapping("/login")
     public String login() {
