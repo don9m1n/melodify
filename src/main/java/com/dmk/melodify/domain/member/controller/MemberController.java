@@ -2,7 +2,6 @@ package com.dmk.melodify.domain.member.controller;
 
 import com.dmk.melodify.domain.member.dto.JoinForm;
 import com.dmk.melodify.domain.member.dto.ModifyDto;
-import com.dmk.melodify.domain.member.entity.Member;
 import com.dmk.melodify.domain.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

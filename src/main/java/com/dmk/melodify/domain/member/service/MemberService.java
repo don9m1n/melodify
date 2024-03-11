@@ -65,36 +65,6 @@ public class MemberService {
         forceUpdateAuthentication(member);
     }
 
-    // 시큐리티 세션 갱신
-    private void forceUpdateAuthentication(Member member) {
-        List<GrantedAuthority> authorities = new ArrayList<>();
-        authorities.add(new SimpleGrantedAuthority("ROLE_MEMBER"));
-
-        MemberContext context = new MemberContext(member, authorities);
-
-        Authentication authentication = new UsernamePasswordAuthenticationToken(context, member.getPassword(), context.getAuthorities());
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-    }
-
-    // 프로필 이미지 업로드
-    private static String uploadProfileImg(MultipartFile profileImg) {
-        String profileImgDirName = "member/" + DateTimeUtil.getCurrentDateFormat("yyyy_MM_dd"); // 폴더명
-        String ext = FileUtil.getExt(profileImg.getOriginalFilename()); // 확장자
-        String fileName = UUID.randomUUID() + "." + ext; // 파일 이름
-        String profileImgDirPath = AppConfig.FILE_DIR_PATH + "/" + profileImgDirName;
-        String profileImgFilePath = profileImgDirPath + "/" + fileName;
-
-        new File(profileImgDirPath).mkdirs(); // 해당 폴더가 없는 경우 만들어준다.
-
-        try {
-            profileImg.transferTo(new File(profileImgFilePath));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
-        return profileImgDirName + "/" + fileName;
-    }
-
     public void changePassword(String username, String newPassword) {
         Member member = getMemberByUsername(username);
         member.changePassword(passwordEncoder.encode(newPassword));
@@ -116,5 +86,35 @@ public class MemberService {
 
     public Member getMemberByUsername(String username) {
         return memberRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("존재하지 않는 회원입니다."));
+    }
+
+    // 프로필 이미지 업로드
+    private static String uploadProfileImg(MultipartFile profileImg) {
+        String profileImgDirName = "member/" + DateTimeUtil.getCurrentDateFormat("yyyy_MM_dd"); // 폴더명
+        String ext = FileUtil.getExt(profileImg.getOriginalFilename()); // 확장자
+        String fileName = UUID.randomUUID() + "." + ext; // 파일 이름
+        String profileImgDirPath = AppConfig.FILE_DIR_PATH + "/" + profileImgDirName;
+        String profileImgFilePath = profileImgDirPath + "/" + fileName;
+
+        new File(profileImgDirPath).mkdirs(); // 해당 폴더가 없는 경우 만들어준다.
+
+        try {
+            profileImg.transferTo(new File(profileImgFilePath));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        return profileImgDirName + "/" + fileName;
+    }
+
+    // 시큐리티 세션 갱신
+    private void forceUpdateAuthentication(Member member) {
+        List<GrantedAuthority> authorities = new ArrayList<>();
+        authorities.add(new SimpleGrantedAuthority("ROLE_MEMBER"));
+
+        MemberContext context = new MemberContext(member, authorities);
+
+        Authentication authentication = new UsernamePasswordAuthenticationToken(context, member.getPassword(), context.getAuthorities());
+        SecurityContextHolder.getContext().setAuthentication(authentication);
     }
 }
