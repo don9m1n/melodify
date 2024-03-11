@@ -25,7 +25,8 @@
                 <div class="text-end">
                     <a th:href="@{/members/login}" sec:authorize="isAnonymous()" class="btn btn-sm btn-light me-2">로그인</a>
                     <a th:href="@{/members/join}" sec:authorize="isAnonymous()" class="btn btn-sm btn-warning">회원가입</a>
-                    <span sec:authorize="isAuthenticated()" th:text="${#authentication.principal.username}"></span>
+                    <span sec:authorize="isAuthenticated()" th:text="${#authentication.principal.email}"></span>
+                    <img sec:authorize="isAuthenticated()" width="60" height="60" th:src="@{|http://localhost:8080/file/${#authentication.principal.profileImg}|}"></img>
                     <a th:href="@{/members/logout}" sec:authorize="isAuthenticated()" class="btn btn-sm btn-warning">로그아웃</a>
                 </div>
             </div>

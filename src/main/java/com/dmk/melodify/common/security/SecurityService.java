@@ -36,7 +36,7 @@ public class SecurityService implements UserDetailsService {
             case ADMIN -> authorities.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
         }
 
-        return new User(member.getUsername(), member.getPassword(), authorities);
+        return new MemberContext(member, authorities);
     }
 
 }
