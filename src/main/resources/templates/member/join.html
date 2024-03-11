@@ -2,7 +2,11 @@
 <main layout:fragment="main">
     <div class="d-flex justify-content-center align-items-center flex-column p-2">
         <h2>회원가입</h2>
-        <form class="w-50" onsubmit="joinFormSubmit(this); return false;" th:action="@{/members/join}" method="post" th:object="${joinForm}">
+        <form class="w-50" onsubmit="joinFormSubmit(this); return false;" th:action="@{/members/join}" method="post" th:object="${joinForm}" enctype="multipart/form-data">
+            <div class="mb-3">
+                <label for="profileImg">프로필 이미지</label>
+                <input type="file" id="profileImg" class="form-control" name="profileImg">
+            </div>
             <div class="mb-3">
                 <label for="username" class="form-label">아이디</label>
                 <input type="text" id="username" class="form-control" th:field="*{username}">
