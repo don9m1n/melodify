@@ -62,6 +62,16 @@ public class Member extends BaseEntity {
                 .build();
     }
 
+    public static Member of(String username, String password, String email, String nickname, String profileImg) {
+        return Member.builder()
+                .username(username)
+                .password(password)
+                .email(email)
+                .nickname(nickname)
+                .profileImg(profileImg)
+                .build();
+    }
+
     public void removeProfileImgOnStorage() {
         if (profileImg == null || profileImg.isEmpty()) {
             return;
