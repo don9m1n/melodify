@@ -1,22 +1,41 @@
 package com.dmk.melodify.domain.member.controller;
 
 import com.dmk.melodify.domain.member.dto.JoinForm;
+import com.dmk.melodify.domain.member.dto.ModifyDto;
 import com.dmk.melodify.domain.member.entity.Member;
 import com.dmk.melodify.domain.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.multipart.MultipartFile;
 
 @Controller
+@Slf4j
 @RequestMapping("/members")
 @RequiredArgsConstructor
 public class MemberController {
 
     private final MemberService memberService;
+
+    @GetMapping("/modify")
+    public String modifyForm(Authentication authentication, Model model) {
+        ModifyDto modifyDto = ModifyDto.fromEntity(memberService.getMemberByUsername(authentication.getName()));
+        model.addAttribute("modifyDto", modifyDto);
+
+        return "member/modify";
+    }
+
+    @PostMapping("/modify")
+    public String modify(Authentication authentication, ModifyDto modifyDto, MultipartFile newProfileImg) {
+        memberService.modify(authentication.getName(), modifyDto, newProfileImg);
+        return "redirect:/";
+    }
 
     @GetMapping("/modify-password")
     public String modifyPasswordForm() {

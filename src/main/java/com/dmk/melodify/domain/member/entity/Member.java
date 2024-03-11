@@ -3,6 +3,7 @@ package com.dmk.melodify.domain.member.entity;
 import com.dmk.melodify.common.auditing.BaseEntity;
 import com.dmk.melodify.common.AppConfig;
 import com.dmk.melodify.domain.member.dto.JoinForm;
+import com.dmk.melodify.domain.member.dto.ModifyDto;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -87,7 +88,14 @@ public class Member extends BaseEntity {
         return AppConfig.FILE_DIR_PATH + "/" + profileImg;
     }
 
+    public void modify(ModifyDto modifyDto, String newProfileImgPath) {
+        this.email = modifyDto.getEmail();
+        this.nickname = modifyDto.getNickname();
+        this.profileImg = newProfileImgPath;
+    }
+
     public void changePassword(String newPassword) {
         this.password = newPassword;
     }
+
 }

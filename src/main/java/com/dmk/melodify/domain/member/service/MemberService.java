@@ -1,16 +1,25 @@
 package com.dmk.melodify.domain.member.service;
 
 import com.dmk.melodify.common.AppConfig;
+import com.dmk.melodify.common.security.MemberContext;
 import com.dmk.melodify.common.util.DateTimeUtil;
 import com.dmk.melodify.common.util.FileUtil;
 import com.dmk.melodify.domain.member.dto.JoinForm;
+import com.dmk.melodify.domain.member.dto.ModifyDto;
 import com.dmk.melodify.domain.member.entity.Member;
 import com.dmk.melodify.domain.member.repository.MemberRepository;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -33,31 +42,44 @@ public class MemberService {
         });
 
         MultipartFile profileImg = joinForm.getProfileImg();
-        String profileImgRelPath = "";
-        log.debug("프로필 이미지가 없나요? {}", profileImg.isEmpty());
-        if (profileImg.isEmpty()) {
-            // TODO: 프로필 이미지가 없는 경우에는 기본 이미지를 세팅.
-            profileImgRelPath = "default.png";
-        } else {
-            String profileImgDirName = "member/" + DateTimeUtil.getCurrentDateFormat("yyyy_MM_dd"); // 폴더명
-            String ext = FileUtil.getExt(profileImg.getOriginalFilename()); // 확장자
-            String fileName = UUID.randomUUID() + "." + ext; // 파일 이름
-            String profileImgDirPath = AppConfig.FILE_DIR_PATH + "/" + profileImgDirName;
-            String profileImgFilePath = profileImgDirPath + "/" + fileName;
+        // TODO: 프로필 이미지 파일을 받은 경우에만 파일 업로드, 비어있는 경우에는 기본 이미지 세팅
+        String profileImgPath = profileImg.isEmpty() ? "default.png" : uploadProfileImg(profileImg);
 
-            new File(profileImgDirPath).mkdirs(); // 해당 폴더가 없는 경우 만들어준다.
+        Member member = Member.of(joinForm, passwordEncoder.encode(joinForm.getPassword()), profileImgPath);
+        memberRepository.save(member);
+    }
 
-            try {
-                profileImg.transferTo(new File(profileImgFilePath));
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
+    public void modify(String username, ModifyDto modifyDto, MultipartFile newProfileImg) {
+        Member member = getMemberByUsername(username);
 
-            profileImgRelPath = profileImgDirName + "/" + fileName;
+        String newProfileImgPath = member.getProfileImg();
+        if (!newProfileImg.isEmpty()) { // 새 프로필 이미지가 있는 경우
+            // 로컬 저장소에 있는 기존 프로필 이미지 삭제
+            removeProfileImg(member);
+            newProfileImgPath = uploadProfileImg(newProfileImg);
         }
 
-        Member member = Member.of(joinForm, passwordEncoder.encode(joinForm.getPassword()), profileImgRelPath);
+        member.modify(modifyDto, newProfileImgPath);
         memberRepository.save(member);
+    }
+
+    // 프로필 이미지 업로드
+    private static String uploadProfileImg(MultipartFile profileImg) {
+        String profileImgDirName = "member/" + DateTimeUtil.getCurrentDateFormat("yyyy_MM_dd"); // 폴더명
+        String ext = FileUtil.getExt(profileImg.getOriginalFilename()); // 확장자
+        String fileName = UUID.randomUUID() + "." + ext; // 파일 이름
+        String profileImgDirPath = AppConfig.FILE_DIR_PATH + "/" + profileImgDirName;
+        String profileImgFilePath = profileImgDirPath + "/" + fileName;
+
+        new File(profileImgDirPath).mkdirs(); // 해당 폴더가 없는 경우 만들어준다.
+
+        try {
+            profileImg.transferTo(new File(profileImgFilePath));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        return profileImgDirName + "/" + fileName;
     }
 
     public void changePassword(String username, String newPassword) {
@@ -82,5 +104,4 @@ public class MemberService {
     public Member getMemberByUsername(String username) {
         return memberRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("존재하지 않는 회원입니다."));
     }
-
 }
