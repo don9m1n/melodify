@@ -1,6 +1,8 @@
 package com.dmk.melodify.domain.member.service;
 
-import com.dmk.melodify.common.util.AppConfig;
+import com.dmk.melodify.common.AppConfig;
+import com.dmk.melodify.common.util.DateTimeUtil;
+import com.dmk.melodify.common.util.FileUtil;
 import com.dmk.melodify.domain.member.dto.JoinForm;
 import com.dmk.melodify.domain.member.entity.Member;
 import com.dmk.melodify.domain.member.repository.MemberRepository;
@@ -9,7 +11,6 @@ import java.io.IOException;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -34,8 +35,9 @@ public class MemberService {
         MultipartFile profileImg = joinForm.getProfileImg();
         log.debug("프로필 이미지가 없나요? {}", profileImg.isEmpty());
 
-        String profileImgDirName = "member";
-        String fileName = UUID.randomUUID() + ".png";
+        String profileImgDirName = "member/" + DateTimeUtil.getCurrentDateFormat("yyyy_MM_dd"); // 폴더명
+        String ext = FileUtil.getExt(profileImg.getOriginalFilename()); // 확장자
+        String fileName = UUID.randomUUID() + "." + ext; // 파일 이름
         String profileImgDirPath = AppConfig.FILE_DIR_PATH + "/" + profileImgDirName;
         String profileImgFilePath = profileImgDirPath + "/" + fileName;
 
