@@ -33,23 +33,29 @@ public class MemberService {
         });
 
         MultipartFile profileImg = joinForm.getProfileImg();
+        String profileImgRelPath = "";
         log.debug("프로필 이미지가 없나요? {}", profileImg.isEmpty());
+        if (profileImg.isEmpty()) {
+            // TODO: 프로필 이미지가 없는 경우에는 기본 이미지를 세팅.
+            profileImgRelPath = "default.png";
+        } else {
+            String profileImgDirName = "member/" + DateTimeUtil.getCurrentDateFormat("yyyy_MM_dd"); // 폴더명
+            String ext = FileUtil.getExt(profileImg.getOriginalFilename()); // 확장자
+            String fileName = UUID.randomUUID() + "." + ext; // 파일 이름
+            String profileImgDirPath = AppConfig.FILE_DIR_PATH + "/" + profileImgDirName;
+            String profileImgFilePath = profileImgDirPath + "/" + fileName;
 
-        String profileImgDirName = "member/" + DateTimeUtil.getCurrentDateFormat("yyyy_MM_dd"); // 폴더명
-        String ext = FileUtil.getExt(profileImg.getOriginalFilename()); // 확장자
-        String fileName = UUID.randomUUID() + "." + ext; // 파일 이름
-        String profileImgDirPath = AppConfig.FILE_DIR_PATH + "/" + profileImgDirName;
-        String profileImgFilePath = profileImgDirPath + "/" + fileName;
+            new File(profileImgDirPath).mkdirs(); // 해당 폴더가 없는 경우 만들어준다.
 
-        new File(profileImgDirPath).mkdirs(); // 해당 폴더가 없는 경우 만들어준다.
+            try {
+                profileImg.transferTo(new File(profileImgFilePath));
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
 
-        try {
-            profileImg.transferTo(new File(profileImgFilePath));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+            profileImgRelPath = profileImgDirName + "/" + fileName;
         }
 
-        String profileImgRelPath = profileImgDirName + "/" + fileName;
         Member member = Member.of(joinForm, passwordEncoder.encode(joinForm.getPassword()), profileImgRelPath);
         memberRepository.save(member);
     }
