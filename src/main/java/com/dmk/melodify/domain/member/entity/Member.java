@@ -1,7 +1,7 @@
 package com.dmk.melodify.domain.member.entity;
 
 import com.dmk.melodify.common.auditing.BaseEntity;
-import com.dmk.melodify.common.util.AppConfig;
+import com.dmk.melodify.common.AppConfig;
 import com.dmk.melodify.domain.member.dto.JoinForm;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
