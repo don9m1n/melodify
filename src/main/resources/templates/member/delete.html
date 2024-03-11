@@ -1,0 +1,36 @@
+<html lang="ko" layout:decorate="~{layout/layout}" xmlns:th="http://www.thymeleaf.org">
+<main layout:fragment="main">
+    <div class="d-flex justify-content-center align-items-center flex-column p-2">
+        <h2>회원 탈퇴</h2>
+        <form class="w-50" th:action="@{/members/delete}" method="post" th:object="${deleteDto}" onsubmit="deleteFormSubmit(this); return false;">
+            <div class="mb-3">
+                <label for="username" class="form-label">아이디</label>
+                <input type="text" id="username" class="form-control" th:value="*{username}" readonly>
+            </div>
+            <div class="mb-3">
+                <label for="createdAt" class="form-label">가입일</label>
+                <input type="text" id="createdAt" class="form-control" th:value="*{#temporals.format(createdAt, 'yyyy-MM-dd HH:mm')}" readonly>
+            </div>
+            <div class="mb-1">
+                <label for="password" class="form-label">비밀번호</label>
+                <input type="password" id="password" class="form-control" name="password">
+            </div>
+
+            <button type="submit" class="btn btn-outline-primary">회원 탈퇴</button>
+        </form>
+    </div>
+
+    <script>
+        function deleteFormSubmit(form) {
+            const password = form.password.value.trim();
+            if (password.length === 0) {
+                alert('비밀번호는 필수 입력 항목입니다.')
+                form.password.focus();
+                return;
+            }
+
+            form.submit();
+        }
+    </script>
+</main>
+</html>

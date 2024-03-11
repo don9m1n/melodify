@@ -1,11 +1,14 @@
 package com.dmk.melodify.domain.member.controller;
 
+import com.dmk.melodify.common.security.MemberContext;
+import com.dmk.melodify.domain.member.dto.DeleteDto;
 import com.dmk.melodify.domain.member.dto.JoinForm;
 import com.dmk.melodify.domain.member.dto.ModifyDto;
 import com.dmk.melodify.domain.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,6 +24,18 @@ import org.springframework.web.multipart.MultipartFile;
 public class MemberController {
 
     private final MemberService memberService;
+
+    @GetMapping("/delete")
+    public String deleteForm(@AuthenticationPrincipal MemberContext context, Model model) {
+        model.addAttribute("deleteDto", DeleteDto.fromEntity(memberService.getMemberById(context.getId())));
+        return "member/delete";
+    }
+
+    @PostMapping("/delete")
+    public String delete(@AuthenticationPrincipal MemberContext context, String password) {
+        memberService.delete(context.getId(), password);
+        return "redirect:/members/logout";
+    }
 
     @GetMapping("/modify")
     public String modifyForm(Authentication authentication, Model model) {

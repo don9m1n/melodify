@@ -72,20 +72,15 @@ public class MemberService {
         memberRepository.save(member);
     }
 
-    public void removeProfileImg(Member member) {
-        log.debug("profileImg: {}", member.getProfileImg());
-        member.removeProfileImgOnStorage();
-        member.setProfileImg(null);
+    public void delete(Long memberId, String password) {
+        Member member = getMemberById(memberId);
 
-        memberRepository.save(member);
-    }
+        if (!passwordEncoder.matches(password, member.getPassword())) {
+            throw new RuntimeException("비밀번호가 일치하지 않습니다!");
+        }
 
-    public Member getMemberById(Long memberId) {
-        return memberRepository.findById(memberId).orElseThrow(() -> new UsernameNotFoundException("존재하지 않는 회원입니다."));
-    }
-
-    public Member getMemberByUsername(String username) {
-        return memberRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("존재하지 않는 회원입니다."));
+        removeProfileImg(member);
+        memberRepository.delete(member);
     }
 
     // 프로필 이미지 업로드
@@ -105,6 +100,24 @@ public class MemberService {
         }
 
         return profileImgDirName + "/" + fileName;
+    }
+
+    public void removeProfileImg(Member member) {
+        log.debug("profileImg: {}", member.getProfileImg());
+        member.removeProfileImgOnStorage();
+        member.setProfileImg(null);
+
+        memberRepository.save(member);
+    }
+
+    @Transactional(readOnly = true)
+    public Member getMemberById(Long memberId) {
+        return memberRepository.findById(memberId).orElseThrow(() -> new UsernameNotFoundException("존재하지 않는 회원입니다."));
+    }
+
+    @Transactional(readOnly = true)
+    public Member getMemberByUsername(String username) {
+        return memberRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("존재하지 않는 회원입니다."));
     }
 
     // 시큐리티 세션 갱신
