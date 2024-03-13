@@ -8,9 +8,17 @@
     <meta name="author" content="Dongmin Kim">
     <title layout:title-pattern="$LAYOUT_TITLE | $CONTENT_TITLE">Melodify</title>
 
-    <!-- bootstarp 5   -->
+    <!-- jquery -->
+    <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+
+    <!-- bootstarp 5 -->
     <script th:src="@{/bootstrap/bootstrap.min.js}"></script>
     <link rel="stylesheet" th:href="@{/bootstrap/bootstrap.min.css}">
+
+    <!-- toastr -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css"/>
+
 </head>
 <body class="d-flex flex-column min-vh-100">
     <header class="p-3 bg-dark text-white">

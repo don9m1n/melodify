@@ -1,6 +1,7 @@
 package com.dmk.melodify.domain.member.controller;
 
 import com.dmk.melodify.common.security.MemberContext;
+import com.dmk.melodify.common.util.UrlEncoderUtil;
 import com.dmk.melodify.domain.member.dto.DeleteDto;
 import com.dmk.melodify.domain.member.dto.JoinForm;
 import com.dmk.melodify.domain.member.dto.ModifyDto;
@@ -79,6 +80,8 @@ public class MemberController {
     @PostMapping("/join")
     public String join(JoinForm joinForm) {
         memberService.join(joinForm);
-        return "redirect:/members/login";
+        String title = UrlEncoderUtil.encode("%s".formatted("회원가입 성공"));
+        String message = UrlEncoderUtil.encode("%s".formatted("로그인 후 멜로디파이를 이용해주세요!"));
+        return "redirect:/members/login?title=%s&message=%s".formatted(title, message);
     }
 }
