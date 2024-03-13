@@ -1,5 +1,6 @@
 package com.dmk.melodify.common.security;
 
+import com.dmk.melodify.common.util.UrlEncoderUtil;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -25,7 +26,10 @@ public class SecurityConfig {
                 )
                 .logout(logout -> logout
                         .logoutUrl("/members/logout")
-                        .logoutSuccessUrl("/")
+                        .logoutSuccessUrl("/?title=%s&message=%s".formatted(
+                                UrlEncoderUtil.encode("%s".formatted("회원탈퇴 성공!")),
+                                UrlEncoderUtil.encode("%s".formatted("아쉽지만 보내드릴게요..")))
+                        )
                         .invalidateHttpSession(true)
                         .deleteCookies("JSESSIONID")
                 )

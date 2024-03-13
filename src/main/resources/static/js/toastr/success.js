@@ -16,6 +16,6 @@ toastr.options = {
     hideMethod: "fadeOut",
 };
 
-function loginSuccessAlert(title, message) {
+function successAlert(title, message) {
     toastr["success"](message, title);
 }
