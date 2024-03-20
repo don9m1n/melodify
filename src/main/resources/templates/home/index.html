@@ -1,6 +1,14 @@
-<html lang="ko" layout:decorate="~{layout/layout}">
+<html lang="ko" layout:decorate="~{layout/layout}" xmlns:th="http://www.thymeleaf.org">
 <main layout:fragment="main">
-    <h2>멜로디파이!</h2>
+
+    <form th:action="@{/spotify/search}" method="get">
+        <div class="mb-3">
+            <label for="query">검색어</label>
+            <input type="text" id="query" name="query">
+        </div>
+
+        <button type="submit">검색</button>
+    </form>
 
     <script th:src="@{/js/toastr/success.js}"></script>
     <script th:inline="javascript" defer>
